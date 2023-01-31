@@ -1,0 +1,47 @@
+Number of peaks detected is:  2
+Peak data is as follows:
+peak  1 :  position =  1444.01 , height =  4038.57
+peak  2 :  position =  1444.51 , height =  4948.61
+
+Fitting completed!
+.
+[[Model]]
+    (Model(voigt, prefix='v0') + Model(voigt, prefix='v1'))
+[[Fit Statistics]]
+    # fitting method   = leastsq
+    # function evals   = 162
+    # data points      = 181
+    # variables        = 6
+    chi-square         = 590667.359
+    reduced chi-square = 3375.24205
+    Akaike info crit   = 1476.38254
+    Bayesian info crit = 1495.57352
+[[Variables]]
+    v0amplitude:  3858.15453 +/- 103.525359 (2.68%) (init = 1)
+    v0center:     1444.56766 +/- 0.00602790 (0.00%) (init = 1444.01)
+    v0sigma:      0.18690348 +/- 0.00364159 (1.95%) (init = 1)
+    v0gamma:      0.18690348 +/- 0.00364159 (1.95%) == 'v0sigma'
+    v0fwhm:       0.67309376 +/- 0.00797481 (1.18%) == '1.0692*v0gamma+sqrt(0.8664*v0gamma**2+5.545083*v0sigma**2)'
+    v0height:     4308.28067 +/- 81.7966591 (1.90%) == '(v0amplitude/(max(1e-15, v0sigma*sqrt(2*pi))))*wofz((1j*v0gamma)/(max(1e-15, v0sigma*sqrt(2)))).real'
+    v1amplitude:  3031.64817 +/- 105.510090 (3.48%) (init = 1)
+    v1center:     1443.88721 +/- 0.00888434 (0.00%) (init = 1444.51)
+    v1sigma:      0.20008977 +/- 0.00525337 (2.63%) (init = 1)
+    v1gamma:      0.20008977 +/- 0.00525337 (2.63%) == 'v1sigma'
+    v1fwhm:       0.72058143 +/- 0.01150447 (1.60%) == '1.0692*v1gamma+sqrt(0.8664*v1gamma**2+5.545083*v1sigma**2)'
+    v1height:     3162.24611 +/- 76.4046490 (2.42%) == '(v1amplitude/(max(1e-15, v1sigma*sqrt(2*pi))))*wofz((1j*v1gamma)/(max(1e-15, v1sigma*sqrt(2)))).real'
+[[Correlations]] (unreported correlations are < 0.100)
+    C(v0amplitude, v1amplitude) = -0.945
+    C(v1amplitude, v1sigma)     = 0.902
+    C(v0amplitude, v0sigma)     = 0.897
+    C(v0amplitude, v1center)    = -0.890
+    C(v0center, v1amplitude)    = 0.878
+    C(v1amplitude, v1center)    = 0.868
+    C(v0amplitude, v0center)    = -0.860
+    C(v0center, v1center)       = 0.855
+    C(v0amplitude, v1sigma)     = -0.827
+    C(v0sigma, v1amplitude)     = -0.818
+    C(v1center, v1sigma)        = 0.767
+    C(v0sigma, v1center)        = -0.758
+    C(v0center, v0sigma)        = -0.754
+    C(v0center, v1sigma)        = 0.751
+    C(v0sigma, v1sigma)         = -0.640

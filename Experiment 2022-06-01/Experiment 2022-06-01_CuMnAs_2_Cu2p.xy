@@ -1,0 +1,54 @@
+# Created by:        SpecsLab Prodigy, Version 4.91.3-r105809 
+#
+# XY-Serializer Export Settings:
+#   Comment Prefix:           #
+#   Output Meta Data:         yes
+#   Energy Axis:              Kinetic Energy
+#   Count Rate:               Counts per Second
+#   Separate Scan Data:       no
+#   Separate Channel Data:    no
+#   External Channel Data:    yes
+#   Transmission Function:    no
+#   Error Bar:                no
+#   Operation Results:        yes
+#   Time Zone Format:         UTC
+#
+# Group:                        Fixed energy
+#
+# Region:                       Cu2p
+# Spectrum ID:                  2
+# Acquisition Date:             06/01/22 10:56:11 UTC
+# Analysis Method:              XPS
+# Analyzer Lens:                SmallArea:1.5kV
+# Analyzer Slit:                4:7x20c\C:mesh
+# Scan Mode:                    FixedEnergies
+# Curves/Scan:                  1
+# Values/Curve:                 1
+# Dwell Time:                   0.5
+# Excitation Energy:            1486.61
+# Kinetic Energy:               553.61
+# Pass Energy:                  100
+# Bias Voltage:                 90
+# Detector Voltage:             1850
+# Eff. Workfunction:            4.14
+# Source:                       X-Ray Dummy
+# Comment:                      
+# OrdinateRange:                [-22.000000, 22.000000]
+
+# Cycle: 0
+#
+# Number of Scans: 1
+
+# Cycle: 0, Curve: 0
+#
+# Acquisition Date:             06/01/22 10:56:11 UTC
+# ColumnLabels:                 index counts/s
+#
+0  19240.087
+
+# External Channel Data Cycle: 0, Temp1_Sen [K] (EBH 150)
+#
+# ColumnLabels: energy Temp1_Sen [K] (EBH 150)
+#
+0 404.27100000000002
+

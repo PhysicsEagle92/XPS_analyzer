@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PeakGraph</class>
+ <widget class="QMainWindow" name="PeakGraph">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>748</width>
+    <height>549</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QComboBox" name="comboBox_Axis">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>81</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>axis</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>kinetic_axis</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>binding_axis</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QPushButton" name="button_FPeaks">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>20</y>
+      <width>91</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Find Peaks </string>
+    </property>
+   </widget>
+   <widget class="MplWidget" name="MplWidget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>60</y>
+      <width>461</width>
+      <height>351</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox_FittingOptions">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>430</y>
+      <width>181</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <item>
+     <property name="text">
+      <string>Voigt Model - lmfit</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QPushButton" name="button_FitPeaks">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>430</y>
+      <width>181</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Fit Peaks</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_Background">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>20</y>
+      <width>91</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set Background</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_PeakPositions">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>470</y>
+      <width>121</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show Peak Positions</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_Background">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>470</y>
+      <width>121</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show Background</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_FittingCurve">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>470</y>
+      <width>121</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show Fitting Curve</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_FittedPeaks">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>470</y>
+      <width>121</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show Fitted Peaks</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_SaveData">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>410</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save Peak Data</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="tableWidget_Peaks">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>50</y>
+      <width>281</width>
+      <height>351</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <row>
+     <property name="text">
+      <string>Data Range (L)</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Data Range (R)</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Centre</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Amplitude</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Sigma</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Gamma</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>fwhm</string>
+     </property>
+    </row>
+    <column>
+     <property name="text">
+      <string>Peak 1</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QPushButton" name="button_DataRange">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>20</y>
+      <width>91</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set Data Range </string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button_FPeaks_2">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>20</y>
+      <width>91</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set Peaks </string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>748</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionChange_Title"/>
+    <addaction name="actionClose"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionChange_Title">
+   <property name="text">
+    <string>Change Title</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MplWidget</class>
+   <extends>QWidget</extends>
+   <header>mplwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
