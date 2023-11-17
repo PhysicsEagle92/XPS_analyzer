@@ -1,0 +1,53 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>e5a9f575-6ee8-41ff-9178-2e9dd900ff92</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>xps_background.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>XPS_analyzer</Name>
+    <RootNamespace>XPS_analyzer</RootNamespace>
+    <InterpreterId>Global|VisualStudio|for_XPS</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="DataHandling.py" />
+    <Compile Include="dat.py" />
+    <Compile Include="get_XMCD.py" />
+    <Compile Include="morse.py" />
+    <Compile Include="nexus_handling.py" />
+    <Compile Include="mplwidget.py" />
+    <Compile Include="Graph_maker.py" />
+    <Compile Include="peak_area.py" />
+    <Compile Include="test.py" />
+    <Compile Include="vamas.py" />
+    <Compile Include="PeakAnalysis.py" />
+    <Compile Include="PeakFitting.py" />
+    <Compile Include="XPS_analyzer.py" />
+    <Compile Include="xps_background.py" />
+    <Compile Include="XPS_UI.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|VisualStudio|for_XPS" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>

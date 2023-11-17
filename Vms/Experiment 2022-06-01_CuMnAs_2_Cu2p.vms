@@ -1,0 +1,80 @@
+VAMAS Surface Chemical Analysis Standard Data Transfer Format 1988 May 4
+Specs
+PHOIBOS HSA3500 DLD 150 R7[HWType 30:101] DLD
+ppxcf1
+?
+1
+Created by SpecsLab Prodigy, Version 4.91.3-r105809 
+NORM
+REGULAR
+1
+0
+0
+0
+0
+0
+1
+Cu2p
+Fixed energy
+2022
+6
+1
+10
+56
+11
+0
+9
+File = C:/Users/ppxcf1/Desktop/Data/XPS/01-Jun-2022/Experiment 2022-06-01_CuMnAs (1).sle
+Group = Fixed energy
+First of group = 1
+Spectrum ID = 2
+Analyzer lens = SmallArea:1.5kV
+Analyzer slit = 4:7x20c\C:mesh
+Scan mode = FixedEnergies
+Kinetic energy start = 553.61
+OrdinateRange = [-22.000000, 22.000000]
+XPS
+Al
+1486.61
+0
+0
+0
+54.500000
+180.000000
+FAT
+100
+1
+4.14
+0
+0
+0
+0
+0
+Cu
+2p
+-1
+Index
+u
+0
+0
+2
+counts
+d
+Transmission
+d
+pulse counting
+0.5
+1
+0
+0
+0
+0
+0
+2
+9620.04
+9620.04
+1
+1
+9620.04
+1
+end of experiment
