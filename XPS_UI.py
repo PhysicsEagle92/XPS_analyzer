@@ -349,7 +349,7 @@ class XPS_UI_Main(QtWidgets.QMainWindow):
         """Iterates through spectra and runs the save spectra function on each window"""
         for window in self.mdi.subWindowList():
             if window.widget().objectName() == "PeakGraph":
-                window.widget().save_spectra(enmass = True,file_prefix = "ArC60_bulkfilm_VoigtFit_",file_index = self.mdi.subWindowList().index(window))
+                window.widget().save_spectra(enmass = True,file_prefix = "ArC60_bulkfilm_VoigtFit_  ",file_index = self.mdi.subWindowList().index(window))
         return
 
 
