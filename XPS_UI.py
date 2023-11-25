@@ -11,6 +11,7 @@ from pathlib import Path
 from PyQt5 import uic, QtWidgets
 import sys
 from XPS_analyzer import XPS_GraphWindow
+from PeakAnalysis import XPS_ApplyAllWindow, peak_analysis
 from nexus_handling import get_nexus_data,get_nexus_data2
 from nexusformat.nexus import nxload
 from DataHandling import data_handling
@@ -35,6 +36,10 @@ class XPS_SpectrumWindow(QtWidgets.QDialog):
         self.done_button = self.findChild(QtWidgets.QPushButton,"button_Done")
         self.energies_combo.currentIndexChanged.connect(self.load_data)
         self.no_of_spectrums_combo.currentIndexChanged.connect(self.load_data)
+        #list comprehension to create a list of numbers from 0 to 49
+        combonumber_list = [x for x in range(50)]
+        #adds combobox list to no_of_spectrums_combo box
+        self.no_of_spectrums_combo.addItems([str(x) for x in combonumber_list])
         self.done_button.clicked.connect(self.done1)
         #window is now displayed
         self.show()
@@ -121,15 +126,8 @@ class XPS_UI_Main(QtWidgets.QMainWindow):
         #adds the apply to all option to the options menu
         self.apply_all_action = QtWidgets.QAction("Apply to All...", self)
         self.options_menu.addAction(self.apply_all_action)
-        self.apply_all_action.triggered.connect(self.apply_to_all_subwindows)
-        #adds the apply to all option to the options menu
-        self.fit_all = QtWidgets.QAction("Fit All Peaks.", self)
-        self.options_menu.addAction(self.fit_all)
-        self.fit_all.triggered.connect(self.fit_all_peaks)
+        self.apply_all_action.triggered.connect(self.apply_all)
 
-        self.save_all = QtWidgets.QAction("Save All Peaks.", self)
-        self.options_menu.addAction(self.save_all)
-        self.save_all.triggered.connect(self.save_mass_spectra)
         return
 
     def done1(self):
@@ -262,96 +260,27 @@ class XPS_UI_Main(QtWidgets.QMainWindow):
             pass
         return
     
-    def apply_to_all_subwindows(self):
-        """Function that applies the current settings to all subwindows"""
-        #select active window
-        active_window = self.mdi.activeSubWindow().widget()
-        #if the active window is not none
-        if active_window is not None:
-            #if the active window is a graph window
-            if active_window.objectName() == "PeakGraph":
-                #apply settings to active window
-                settings_names,settings = self.get_settings(active_window)
-                print("settings names = ",settings_names)
-                #for each window in the mdi area
-                for window in self.mdi.subWindowList():
-                    #if the window is a graph window
-                    if window.widget().objectName() == "PeakGraph":
-                        #if the window is not the active window
-                        #apply settings to the window
-                        self.set_settings(settings_names,settings,window.widget())
-                        self.enable_GUI_functions(window.widget())
-        return
 
-    def get_settings(self,active_window):
-        """Gets parameters from active window"""     
-        settings_names = ["axis","sind","background_range","background_type","background","peak_no","inital_peak_positions","constraints","model_type","model_func","is_convoluded","model_prefix","fitting_method","model","pars","fit_results","fitted_array","peaks"]
-        settings = []
-        for name in settings_names:
-            settings.append(getattr(active_window,name))
-        return settings_names,settings
-    
-    def set_settings(self,settings_names,settings,window):
-        """Sets constraints background and ranges to active window"""
-        for name in settings_names:
-            setting = settings[settings_names.index(name)]
-            setattr(window,name,setting)
+    def apply_all(self):
+        """Function that opens the apply all options window"""
+        apply_all_window = XPS_ApplyAllWindow()
+        apply_all_window.exec_()
+        variables = apply_all_window.variables
+        background = apply_all_window.background
+        fit = apply_all_window.fit
+        save = apply_all_window.save
+        prefix = apply_all_window.save_prefix 
+        print(variables,background,fit,save,prefix)
+        if variables == True:
+            peak_analysis.apply_to_all_subwindows(self)
+        if background == True:
+            background_variables = {"range_1":self.mdi.activeSubWindow().widget().background_range["range_1"],"range_2":self.mdi.activeSubWindow().widget().background_range["range_2"],"type_1":self.mdi.activeSubWindow().widget().background_type["type_1"],"type_2":self.mdi.activeSubWindow().widget().background_type["type_2"]}
+            peak_analysis.apply_background_to_all(self,background_variables)
+        if fit == True:
+            peak_analysis.fit_all_peaks(self)
+        if save == True:
+            peak_analysis.save_mass_spectra(self,prefix)
         return
-    
-    def enable_GUI_functions(self,window):
-        """Enables GUI functions for window"""
-        window.enable_fpeaks()
-        if window.background is None:
-            window.show_background_button.setDisabled(True)
-        else:
-            window.show_background_button.setEnabled(True)
-        if window.inital_peak_positions is None:
-            window.show_peakposotions_button.setDisabled(True)
-        else:
-            window.show_peakposotions_button.setDisabled(False)
-        if window.fit_results is None:
-            window.show_fittingcurve_button.setDisabled(True)
-            window.show_fittedpeaks_button.setDisabled(True)
-        else:
-            window.show_fittingcurve_button.setEnabled(True)
-            window.show_fittedpeaks_button.setEnabled(True)
-        return
-    
-    
-    def fit_all_peaks(self):
-        """Iterates over all mdi subwindow and runs the fit peaks function on each window"""
-        for window in self.mdi.subWindowList():
-            if window.widget().objectName() == "PeakGraph":
-                try:
-                    
-                    window.widget().initiate_fitting()
-                except:
-                    print("fitting failed for ", self.mdi.subWindowList().index(window))
-                self.enable_GUI_functions(window.widget())
-        return
-    
-    def total_area(self):
-        """Iterates over all mdi subwindow and runs the total area function on each window"""
-        area = np.zeros(len(self.mdi.subWindowList()))
-        energy = np.zeros(len(self.mdi.subWindowList()))
-        for window in self.mdi.subWindowList():
-            i = 0
-            if window.widget().objectName() == "PeakGraph":
-                try:   
-                    area[i] = np.trapz(window.widget().data[:,1] - window.widget().background)
-                    energy[i] = window.widget().meta_data["excitation_energy"]
-                except:
-                    print("fitting failed for ", self.mdi.subWindowList().index(window))
-            i+=1
-        return area, energy
-    
-    def save_mass_spectra(self):
-        """Iterates through spectra and runs the save spectra function on each window"""
-        for window in self.mdi.subWindowList():
-            if window.widget().objectName() == "PeakGraph":
-                window.widget().save_spectra(enmass = True,file_prefix = "ArC60_bulkfilm_VoigtFit_  ",file_index = self.mdi.subWindowList().index(window))
-        return
-
 
 def main_window():
     """Function that initalizes the main window object and runs the program"""

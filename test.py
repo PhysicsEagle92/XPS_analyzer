@@ -126,10 +126,5 @@ def plot_function(x,y):
     return
 
 
-arr = np.array([1,2,3,np.nan,np.nan,6])
-print(arr)
-print(arr[~np.isnan(arr)])
-
-string = "abcdefg"
-print(string[0:3])
-print(string[-2:])
+combonumber_list = [x for x in range(50)]
+print(combonumber_list)
