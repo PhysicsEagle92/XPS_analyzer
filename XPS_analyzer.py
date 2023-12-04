@@ -17,7 +17,7 @@ from xps_background import xps_BackgroundWindow
 
 import csv
 import pandas as pd
-
+import os
 
 
 
@@ -653,8 +653,7 @@ class XPS_GraphWindow(data_handling,peak_fitting,QtWidgets.QMainWindow):
         if self.background is not None and self.inital_peak_positions is not None and self.model is not None and self.pars is not None:
             self.fit_button.setDisabled(False)
         else:
-            self.fit_button.setDisabled(True)
-        
+            self.fit_button.setDisabled(True)        
         return
     
     
@@ -688,19 +687,20 @@ class XPS_GraphWindow(data_handling,peak_fitting,QtWidgets.QMainWindow):
                 print(len(self.data))
                 for i in range(len(self.data)):
                     data_line = [self.data[i,0],self.data[i,1]]
-                    writer.writerow(data_line)  
+                    writer.writerow(data_line)
                     print(data_line)
         return
     
-    def save_spectra(self,enmass = False,file_prefix = "Spectra_",file_index = "00"):
+    def save_spectra(self,enmass = False,dir_name = None,file_prefix = "Spectra_",file_index = "00"):
         if enmass == False:
             file_name, _  = QtWidgets.QFileDialog.getSaveFileName(self,"Save csv File","", "csv file (*.csv)")
             if file_name != "":
                 self.save_report(file_name)
             else:
                 pass
-        else:
-            file_name = file_prefix + str(file_index) + ".csv"
+        else:           
+            print(dir_name, file_prefix , str(file_index))
+            file_name = os.path.join(dir_name, file_prefix + str(file_index) + '.csv')
             if file_name != "":
                 self.save_report(file_name)
             else:

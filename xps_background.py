@@ -104,8 +104,7 @@ class xps_BackgroundWindow(QtWidgets.QDialog):
 			background_final[range_1[0]:range_1[1]] = background[~np.isnan(background)]	
 			background_final[range_2[0]:range_2[1]] = background_2[~np.isnan(background_2)]
 			over_inds = xps_BackgroundWindow.determine_overlap(range_1,range_2)
-			if over_inds[0] is not None:
-				over_back = (background[over_inds] + background_2[over_inds])/2
+			if over_inds is not None:
 				#function to combine the two background arrays
 				over_back = (background[over_inds] + background_2[over_inds])/2
 				background_final[over_inds] = over_back

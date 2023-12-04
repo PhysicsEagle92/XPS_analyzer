@@ -103,5 +103,10 @@ def dat_handling_IELTS(file):
     return data
 
 
-
-
+def csv_handling(filename):
+    """reads a csv file with two columns and one header line to two variables"""
+    with open(filename) as f:
+        df = pd.read_csv(filename,header=None)
+        x = df[0]
+        y = df[1]
+    return np.column_stack((x,y))

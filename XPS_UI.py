@@ -11,11 +11,11 @@ from pathlib import Path
 from PyQt5 import uic, QtWidgets
 import sys
 from XPS_analyzer import XPS_GraphWindow
-from PeakAnalysis import XPS_ApplyAllWindow, peak_analysis
+from PeakAnalysis import XPS_ApplyAllWindow,XPS_YieldWindow, peak_analysis
 from nexus_handling import get_nexus_data,get_nexus_data2
 from nexusformat.nexus import nxload
 from DataHandling import data_handling
-from dat import dat_handling,dat_handling_I06, dat_handling_IELTS, xy_handling
+from dat import dat_handling,dat_handling_I06, dat_handling_IELTS, xy_handling,csv_handling
 import numpy as np
 
 class XPS_SpectrumWindow(QtWidgets.QDialog):
@@ -128,6 +128,10 @@ class XPS_UI_Main(QtWidgets.QMainWindow):
         self.options_menu.addAction(self.apply_all_action)
         self.apply_all_action.triggered.connect(self.apply_all)
 
+        #adds the apply to all option to the options menu
+        self.total_e_yield = QtWidgets.QAction("Total Electron Yield...", self)
+        self.options_menu.addAction(self.total_e_yield)
+        self.total_e_yield.triggered.connect(self.yield_calc)        
         return
 
     def done1(self):
@@ -161,7 +165,7 @@ class XPS_UI_Main(QtWidgets.QMainWindow):
                 self.graph_window.setWindowTitle(self.file)
                 #assigns the data of the ith nexus region to the graph window object
                 self.graph_window.nxs = self.nxs_data[i]
-                self.graph_window.meta = self.nxs_meta
+                self.graph_window.meta_data = self.nxs_meta
             #initalizes the data for the region (initalize data function on the XPS_analyzer file)
                 self.graph_window.initalize_data()
                 #adds the graph window to the mdi area
@@ -213,7 +217,7 @@ class XPS_UI_Main(QtWidgets.QMainWindow):
             #adds the graph window to the mdi area
             self.mdi.addSubWindow(self.graph_window)
             #shows the graph window
-            self.graph_window.show()
+            self.graph_window.show()       
         #if neither is possible displays this error message
         else:
             print("could not open file")
@@ -233,7 +237,7 @@ class XPS_UI_Main(QtWidgets.QMainWindow):
         elif self.file[-3:] == "nxs" and self.is_mapp == True:
             file = nxload(self.file)
             self.nxs_data, self.nxs_meta = get_nexus_data2(file)
-            excitation_energy = self.nxs_meta[0]["excitation_energy"]
+            excitation_energy = self.nxs_meta[0]["excitation_energy"]           
             energies = self.nxs_meta[0]["energies"][0]
             spectrum_data = self.nxs_meta[0]["spectrum_data"]            
             #opens box to allow user to select spectrum range from map
@@ -256,6 +260,8 @@ class XPS_UI_Main(QtWidgets.QMainWindow):
             self.dat = dat_handling_IELTS(self.file)
         elif self.file[-3:] == ".xy":
             self.xy = xy_handling(self.file)
+        elif self.file[-3:] == "csv":
+            self.xy = csv_handling(self.file)
         else:
             pass
         return
@@ -270,7 +276,6 @@ class XPS_UI_Main(QtWidgets.QMainWindow):
         fit = apply_all_window.fit
         save = apply_all_window.save
         prefix = apply_all_window.save_prefix 
-        print(variables,background,fit,save,prefix)
         if variables == True:
             peak_analysis.apply_to_all_subwindows(self)
         if background == True:
@@ -279,9 +284,21 @@ class XPS_UI_Main(QtWidgets.QMainWindow):
         if fit == True:
             peak_analysis.fit_all_peaks(self)
         if save == True:
-            peak_analysis.save_mass_spectra(self,prefix)
+            dir_name  = QtWidgets.QFileDialog.getExistingDirectory(self,"Open Directory","/home",QtWidgets.QFileDialog.ShowDirsOnly)    
+            peak_analysis.save_mass_spectra(self.mdi,dir_name,prefix)
         return
 
+    def yield_calc(self):
+        """Function that opens the yield calculator window"""
+        yield_window = XPS_YieldWindow()
+        #sets lenn to number of mdi windows
+        
+        yield_window.current_mdi = self.mdi
+        yield_window.lenn = self.mdi.subWindowList().index(self.mdi.subWindowList()[-1])
+        yield_window.initize_combos()
+        yield_window.exec_()
+        return
+    
 def main_window():
     """Function that initalizes the main window object and runs the program"""
     app = QtWidgets.QApplication(sys.argv)

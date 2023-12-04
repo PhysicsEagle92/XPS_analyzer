@@ -411,8 +411,3 @@ def get_nexus_data2(file, entry_string="entry1", detector="ew4000"):
         data_region_list.append({"energies": energies, "spectrum_data": spectrum_data, "image_data": image_data, "i0": external_io_data})
 
     return data_region_list, metadata_region_list
-
-
-#file = nxload(full_path)
-#data_list, metadata_list = get_nexus_data2(file,entry_string)
-#plot_xps_data(data_list, metadata_list)
