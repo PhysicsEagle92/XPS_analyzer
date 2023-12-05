@@ -277,7 +277,8 @@ class XPS_UI_Main(QtWidgets.QMainWindow):
         save = apply_all_window.save
         prefix = apply_all_window.save_prefix 
         if variables == True:
-            peak_analysis.apply_to_all_subwindows(self)
+            peaks,contraints,ranges,backgrounds,fittings = apply_all_window.peak_settings,apply_all_window.constraint_settings,apply_all_window.datarange_settings,apply_all_window.background_settings,apply_all_window.fit_settings
+            peak_analysis.apply_to_all_subwindows(self,peaks,contraints,ranges,backgrounds,fittings)
         if background == True:
             background_variables = {"range_1":self.mdi.activeSubWindow().widget().background_range["range_1"],"range_2":self.mdi.activeSubWindow().widget().background_range["range_2"],"type_1":self.mdi.activeSubWindow().widget().background_type["type_1"],"type_2":self.mdi.activeSubWindow().widget().background_type["type_2"]}
             peak_analysis.apply_background_to_all(self,background_variables)

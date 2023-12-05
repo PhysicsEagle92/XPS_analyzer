@@ -8,6 +8,11 @@ class XPS_ApplyAllWindow(QtWidgets.QDialog):
     def __init__(self):
         super(XPS_ApplyAllWindow,self).__init__()
         self.variables = False
+        self.peak_settings = False
+        self.constraint_settings = False
+        self.datarange_settings = False
+        self.background_settings = False
+        self.fit_settings = False                                                                            
         self.background = False
         self.fit = False
         self.save = False
@@ -28,9 +33,14 @@ class XPS_ApplyAllWindow(QtWidgets.QDialog):
         self.peaksettings_checkbox = self.findChild(QtWidgets.QCheckBox,"checkBox_Variable1_PeakSettings")
         self.contraints_checkbox = self.findChild(QtWidgets.QCheckBox,"checkBox_Variable2_Contraints")
         self.datarange_checkbox = self.findChild(QtWidgets.QCheckBox,"checkBox_Variable3_DataRange")
-        self.background_checkbox = self.findChild(QtWidgets.QCheckBox,"checkBox_Variable4_Background")
+        self.background_setting_checkbox = self.findChild(QtWidgets.QCheckBox,"checkBox_Variable4_Background")
         self.fittings_checkbox = self.findChild(QtWidgets.QCheckBox,"checkBox_Variable5_Fitting")
-        
+        self.peaksettings_checkbox.setEnabled(False)
+        self.contraints_checkbox.setEnabled(False)
+        self.datarange_checkbox.setEnabled(False)
+        self.background_setting_checkbox.setEnabled(False)
+        self.fittings_checkbox.setEnabled(False)
+            
         self.background_checkbox = self.findChild(QtWidgets.QCheckBox,"checkBox_BackgroundCalc")
         self.fit_checkbox = self.findChild(QtWidgets.QCheckBox,"checkBox_Fit")
         self.save_checkbox = self.findChild(QtWidgets.QCheckBox,"checkBox_Save")
@@ -48,17 +58,18 @@ class XPS_ApplyAllWindow(QtWidgets.QDialog):
 
     def enable_variables(self):
         if self.allvariables_checkbox.isChecked():
-            self.peaksettings_checkbox.setEnabled(False)
-            self.contraints_checkbox.setEnabled(False)
-            self.datarange_checkbox.setEnabled(False)
-            self.background_checkbox.setEnabled(False)
-            self.fittings_checkbox.setEnabled(False)
-        else:
             self.peaksettings_checkbox.setEnabled(True)
             self.contraints_checkbox.setEnabled(True)
             self.datarange_checkbox.setEnabled(True)
-            self.background_checkbox.setEnabled(True)
+            self.background_setting_checkbox.setEnabled(True)
             self.fittings_checkbox.setEnabled(True)
+        else:
+            self.peaksettings_checkbox.setEnabled(False)
+            self.contraints_checkbox.setEnabled(False)
+            self.datarange_checkbox.setEnabled(False)
+            self.background_setting_checkbox.setEnabled(False)
+            self.fittings_checkbox.setEnabled(False)
+
         return
     
     def enable_prefix(self):
@@ -70,7 +81,8 @@ class XPS_ApplyAllWindow(QtWidgets.QDialog):
         return
 
     def apply(self):
-        if self.variables_checkbox.isChecked():
+        if self.allvariables_checkbox.isChecked():
+            self.variables = True
             if self.peaksettings_checkbox.isChecked():
                 self.peak_settings = True
             if self.contraints_checkbox.isChecked():
@@ -179,7 +191,7 @@ class XPS_YieldWindow(QtWidgets.QDialog):
 class peak_analysis:
     """Class that contains functions for peak analysis"""
     
-    def apply_to_all_subwindows(self):
+    def apply_to_all_subwindows(self,peaks,contraints,ranges,backgrounds,fittings):
         """Function that applies the current settings to all subwindows"""
         #select active window
         active_window = self.mdi.activeSubWindow().widget()
@@ -189,30 +201,43 @@ class peak_analysis:
             if active_window.objectName() == "PeakGraph":
                 #apply settings to active window
                 settings_names,settings = peak_analysis.get_settings(active_window)
-                print("settings names = ",settings_names)
                 #for each window in the mdi area
                 for window in self.mdi.subWindowList():
                     #if the window is a graph window
                     if window.widget().objectName() == "PeakGraph":
                         #if the window is not the active window
                         #apply settings to the window
-                        peak_analysis.set_settings(settings_names,settings,window.widget())
+                        peak_analysis.set_settings(settings_names,settings,window.widget(),peaks,contraints,ranges,backgrounds,fittings)
                         peak_analysis.enable_GUI_functions(window.widget())
         return
 
     def get_settings(active_window):
         """Gets parameters from active window"""     
-        settings_names = ["axis","sind","background_range","background_type","background","peak_no","inital_peak_positions","constraints","model_type","model_func","is_convoluded","model_prefix","fitting_method","model","pars","fit_results","fitted_array","peaks"]
-        settings = []
-        for name in settings_names:
-            settings.append(getattr(active_window,name))
+        settings_names = {"peak_settings" : ["peak_no","inital_peak_positions","model_type","is_convoluded","model_func","model_prefix","fitting_method","model","pars"],"constraints":["constraints"],"data_range":["sind"],"background" : ["background_range","background_type"],"fittings":["fit_results","fitted_array","peaks"]}        
+        settings = {"peak_settings" : [],"constraints":[],"data_range":[],"background":[],"fittings":[]}
+        for settings_key in settings_names.keys():
+            for name in settings_names[settings_key]:  
+                settings[settings_key].append(getattr(active_window,name))
         return settings_names,settings
     
-    def set_settings(settings_names,settings,window):
+    def set_settings(settings_names,settings,window,peaks,contraints,ranges,backgrounds,fittings):
         """Sets constraints background and ranges to active window"""
-        for name in settings_names:
-            setting = copy.deepcopy(settings[settings_names.index(name)])
-            setattr(window,name,setting)
+        setting_keys = []
+        if peaks == True:
+            setting_keys.append("peak_settings")
+        if contraints == True:
+            setting_keys.append("constraints")
+        if ranges == True:
+            setting_keys.append("data_range")
+        if backgrounds == True:
+            setting_keys.append("background")
+        if fittings == True:
+            setting_keys.append("fittings")
+        for key in setting_keys:
+            for name in settings_names[key]:
+                i = settings_names[key].index(name)
+                setting = copy.deepcopy(settings[key][i])
+                setattr(window,name,setting)
         return
     
     def enable_GUI_functions(window):

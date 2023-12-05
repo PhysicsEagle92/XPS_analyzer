@@ -127,14 +127,6 @@ def plot_function(x,y):
 
 
 
-a = 33
-b= 29
-#creates a list of all numbers from a to b, inclusive
-def create_list(a,b):
-    if a>b:
-        return [x for x in range(b,a+1)]
-    else:       
-        return [x for x in range(a,b+1)]
-
-x=create_list(a,b)
-print(x)
+dict = {'a':[1,2,3],'b':[4,5,6],'c':[7,8,9]}
+dict['a'].append(10)
+print(dict['a'])
