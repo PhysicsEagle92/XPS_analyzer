@@ -52,6 +52,7 @@ class XPS_ApplyAllWindow(QtWidgets.QDialog):
         self.prefix_lineedit = self.findChild(QtWidgets.QLineEdit,"lineEdit_SetPrefix")
         self.prefix_lineedit.setText("Spectra_")
         self.prefix_lineedit.setDisabled(True)
+        self.prefix_lineedit.textChanged.connect(self.enable_prefix)
         #window is now displayed
         self.show()
         return
