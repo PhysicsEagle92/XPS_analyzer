@@ -98,7 +98,7 @@ def test_model():
     #pars = model.make_params()
     #pars['V0center'].set(center_pos[0],min = 92.2,max = 92.4)
     #pars['V1center'].set(center_pos[1],min = 93.5,max = 93.7)
-
+    pars['V1amplitude'].set(expr = 'V0Ampltiude*7')
     result = model.fit(y,pars,x=x)
     print(pars['V0center'].value)
     print(pars['V1center'].value)
@@ -126,7 +126,35 @@ def plot_function(x,y):
     return
 
 
+from wrapt_timeout_decorator import timeout
+import time
 
-dict = {'a':[1,2,3],'b':[4,5,6],'c':[7,8,9]}
-dict['a'].append(10)
-print(dict['a'])
+
+# Define a decorator with a timeout of 5 seconds
+
+def timeout_function(x):
+    # Your long-running code here
+    time.sleep(x)
+    return
+
+@timeout(5,use_signals=False)
+def test_timeout(x):
+    try:
+        timeout_function(x)
+    except:
+        print("Timeout")
+        return 1
+    return 0
+
+#test1 = 0
+test1 = test_timeout(10)
+print(test1)
+
+test2 = test_timeout(1)
+print(test2)
+    
+
+
+
+    
+

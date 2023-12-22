@@ -16,7 +16,7 @@ class XPS_ConstraintsWindow(QtWidgets.QDialog):
         self.pars = None
         self.prefix = None
         self.peak_no = 1
-        self.constraints = {}
+        self.constraints = None
         self.initUI()
         
     def initUI(self):
@@ -74,6 +74,7 @@ class XPS_ConstraintsWindow(QtWidgets.QDialog):
         
         key = list(self.constraints.keys())
         keys = list(self.constraints[key[0]].keys())
+
         self.cons_table.setRowCount(0)       
         for i in range(self.peak_no):
             self.cons_table.insertRow(i)
@@ -523,9 +524,9 @@ class peak_fitting(custom_models):
     
     def set_constraints_variable(self,pars):        
         """Function to set the form of constraints dictionary"""
-        constraints = {}
         if pars == None:
-            return constraints
+            return None
+        constraints = {}
         for param in pars:
             constraints[param] = {"Value":pars[param].value,"Min":pars[param].min,"Max":pars[param].max,"Expr":pars[param].expr,"Vary":pars[param].vary}
         return constraints
@@ -625,7 +626,7 @@ class peak_fitting(custom_models):
         #fits the peak model to the XPS data
         print(method)
         fit_results = model.fit(y,pars,x=x,method=method,nan_policy='omit')  
-        print(fit_results.fit_report())
+        #print(fit_results.fit_report())
         return fit_results
   
     

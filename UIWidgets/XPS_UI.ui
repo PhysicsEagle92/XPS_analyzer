@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1875</width>
+    <width>1359</width>
     <height>961</height>
    </rect>
   </property>
@@ -35,7 +35,7 @@
      <rect>
       <x>130</x>
       <y>0</y>
-      <width>1721</width>
+      <width>1211</width>
       <height>921</height>
      </rect>
     </property>
@@ -59,7 +59,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1875</width>
+     <width>1359</width>
      <height>21</height>
     </rect>
    </property>
@@ -83,6 +83,16 @@
   <action name="actionApply_to_All">
    <property name="text">
     <string>Apply to All...</string>
+   </property>
+  </action>
+  <action name="actionLoad_Previous">
+   <property name="text">
+    <string>Load Previous</string>
+   </property>
+  </action>
+  <action name="actionLoad_Previous_From_Dircectory">
+   <property name="text">
+    <string>Load Previous From Dircectory</string>
    </property>
   </action>
  </widget>

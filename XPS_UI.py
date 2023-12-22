@@ -17,6 +17,7 @@ from nexusformat.nexus import nxload
 from DataHandling import data_handling
 from dat import dat_handling,dat_handling_I06, dat_handling_IELTS, xy_handling,csv_handling
 import numpy as np
+import os
 
 class XPS_SpectrumWindow(QtWidgets.QDialog):
     def __init__(self):
@@ -117,8 +118,14 @@ class XPS_UI_Main(QtWidgets.QMainWindow):
         #adds file menu to toolbar
         self.file_menu = self.menu.addMenu("File")
         #adds exit to file menu
+        self.Load = QtWidgets.QAction("Load Previous Spectrum", self)
+        self.Load_Mass = QtWidgets.QAction("Load Previous Spectrum from directory", self)
         self.exit = QtWidgets.QAction("Exit", self)
+        self.file_menu.addAction(self.Load)
+        self.file_menu.addAction(self.Load_Mass)
         self.file_menu.addAction(self.exit)
+        self.Load.triggered.connect(self.load_previous_spectrum)
+        self.Load_Mass.triggered.connect(self.load_previous_spectrum_mass)
         self.exit.triggered.connect(self.done1)
         
         #Adds the options menu to the toolbar
@@ -298,6 +305,65 @@ class XPS_UI_Main(QtWidgets.QMainWindow):
         yield_window.lenn = self.mdi.subWindowList().index(self.mdi.subWindowList()[-1])
         yield_window.initize_combos()
         yield_window.exec_()
+        return
+    
+    def load_previous_spectrum(self,file):
+        """Loads a spectrum from a csv file"""
+        #opens a file dialog and assigns the file name to the file variable
+        self.file, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Open CSV File","", "CSV Files (*.csv);;All Files (*)")
+        # if its a csv file calls the function open csv file to create a variable containing the data
+        if self.file[-3:] == "csv":
+            try:
+                self.load_from_previous()
+            except:
+                print("Error loading file: ",self.file)
+        return
+    
+    def load_previous_spectrum_mass(self):
+        """Loads list of spectra from a directory"""
+        #opens a file dialog and assigns the file name to the file variable
+        directory = QtWidgets.QFileDialog.getExistingDirectory(self,"Open Directory","/home",QtWidgets.QFileDialog.ShowDirsOnly)
+        #iterate over each file in directory
+        for new_file in os.listdir(directory):
+            full_file = directory + "/" + new_file
+            self.file = full_file
+            try:                
+                self.load_from_previous()
+                print("Loaded file: ",new_file)
+            except:
+                print("Error loading file: ",new_file)
+
+        return
+    
+    def load_from_previous(self):
+        """Loads a spectrum from a csv file"""
+        energy, raw_data, fit, background, peaks, peak_data, _ = peak_analysis.load_csv_file(self.file)
+        #if neither is possible the function returns without any assignment
+        data = np.zeros((len(energy),2))
+        data[:,0],data[:,1] = energy,raw_data
+        self.spectrum_window =  XPS_GraphWindow()
+        self.spectrum_window.setWindowTitle(self.file)
+        self.spectrum_window.data = data
+        self.spectrum_window.fitted_array = fit
+        self.spectrum_window.background = background
+        self.spectrum_window.show_background_button.setDisabled(False)
+        self.spectrum_window.peak_no , _ = peak_analysis.find_number_of_peaks_n_params(self.file)
+        self.spectrum_window.peaks = np.zeros((self.spectrum_window.peak_no,len(fit)))
+        for i,key in enumerate(peaks.keys()):
+            self.spectrum_window.peaks[i] = peaks[key]
+        #find the indices spanning the non nan values of the data
+        indicies = np.where(~np.isnan(fit))[0]
+        #find the min and max of the indicies
+        self.spectrum_window.sind = np.array([np.min(indicies),np.max(indicies)])
+        self.spectrum_window.spanned_data = np.array([[np.nan,np.nan]]*len(self.spectrum_window.data))
+        self.spectrum_window.spanned_data[self.spectrum_window.sind[0]:self.spectrum_window.sind[1]] = self.spectrum_window.data[self.spectrum_window.sind[0]:self.spectrum_window.sind[1]]           
+        peak_analysis.set_peak_data(self.spectrum_window,peak_data,self.spectrum_window.peak_no)
+        self.spectrum_window.show_peakposotions_button.setDisabled(False)
+        self.spectrum_window.enable_fpeaks()
+        #adds the graph window to the mdi area
+        self.mdi.addSubWindow(self.spectrum_window)
+        #shows the graph window
+        self.spectrum_window.show()        
         return
     
 def main_window():

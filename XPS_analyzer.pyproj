@@ -31,6 +31,7 @@
     <Compile Include="Graph_maker.py" />
     <Compile Include="peak_area.py" />
     <Compile Include="test.py" />
+    <Compile Include="timeout.py" />
     <Compile Include="vamas.py" />
     <Compile Include="PeakAnalysis.py" />
     <Compile Include="PeakFitting.py" />

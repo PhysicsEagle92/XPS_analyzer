@@ -1,8 +1,10 @@
 from pathlib import Path
 from PyQt5 import uic, QtWidgets
 from xps_background import xps_BackgroundWindow
+from DataHandling import data_handling
 import numpy as np
 import copy
+import csv
 
 class XPS_ApplyAllWindow(QtWidgets.QDialog):
     def __init__(self):
@@ -290,7 +292,9 @@ class peak_analysis:
     
     def fit_all_peaks(self):
         """Iterates over all mdi subwindow and runs the fit peaks function on each window"""
+        #prints the index of the last window in mdi subwindow list
         for window in self.mdi.subWindowList():
+            print("Now fitting window", self.mdi.subWindowList().index(window) + 1, " of ",len(self.mdi.subWindowList()))
             if window.widget().objectName() == "PeakGraph":
                 try:
                     window.widget().initiate_fitting()
@@ -326,7 +330,111 @@ class peak_analysis:
                 except:
                     print("save spectra failed for ", mdi.subWindowList().index(window))
         return
+    
+    
+    def load_csv_file(filename):
+        """Reads CSV files from XPS analyzer and returns data in NumPy arrays."""
+        with open(filename, 'r') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+
+            # Initialize data arrays
+            energy, raw_data, fit, background = np.array([]), np.array([]), np.array([]), np.array([])
+
+            # Initialize dictionaries for header and peak/fit data
+            header_data, peak_data, fit_data, peaks = {}, {}, {}, {}
+        
+            # Variables
+            ite,peak_params = peak_analysis.find_number_of_peaks_n_params(filename)
+            fit_params = 4
+            find_data_line = False
+            for i in range(ite):
+                peaks["peak_"+str(i+1)] = np.array([])       
+
+            
+            for row in csv_reader:
+                # Header lines
+                if not find_data_line and row[0][0] != "#":
+                    header_data[row[0]] = row[1]
+                elif not find_data_line and row[0][0] == "#":
+                    find_data_line = True
+               
+                
+                # Data lines
+                elif find_data_line:
+                    if row[0] == "Energy":
+                        pass
+                    else:
+                        # Add data to arrays
+                        energy = np.append(energy, float(row[0]))
+                        raw_data = np.append(raw_data, float(row[1]))
+                        fit = np.append(fit, float(row[2]))
+                        background = np.append(background, float(row[3]))
+                    
+                        # Add peak data to the 'peaks' dictionary
+                        for i in range(ite):                        
+                            peaks["peak_"+str(i+1)] = np.append(peaks["peak_"+str(i+1)],float(row[i+4]))   
+                    
+        # Split header data into 'peak_data' and 'fit_data'
+        
+            param_counter = 0
+            for key, value in header_data.items():            
+                if param_counter < peak_params*ite:
+                    peak_data[key] = value
+                else:
+                    fit_data[key] = value
+                param_counter +=1
+        return energy, raw_data, fit, background, peaks, peak_data, fit_data
 
 
+    
+    def find_number_of_peaks_n_params(filename):
+        """Finds the number of peaks in the CSV file."""
+        with open(filename, 'r') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            no_of_rows = 0
+            for row in csv_reader:
+                no_of_rows += 1
+                #if statement that reads true if the row starts with a letter
+                if row[0][0].isalpha():
+                    pass
+                elif row[0] == "Energy":
+                    pass
+                elif row[0][0] == "#":
+                    pass
+                else:
+                    peak_no = len(row) - 4
+                    no_params = int((no_of_rows -3 - 4)/peak_no)
+                    return peak_no, no_params
+            
+    def set_peak_data(spectrum_window,peak_data,peak_no):
+        """unpacks the peak_data and converts it to the spectrum window"""
+        model_types_dict = {"V" : "Voigt Peaks" , "L" : "Lorentzian Peaks", "D" : "Doniach-Sunjic Peaks", "rD" : "reversed Doniach-Sunjic Peak", 
+                            "C" : "Convolved Doniach-Sunjic and Guassian", "rC" :"reversed Convolved Doniach-Sunjic and Guassian"}
+        #get model type from peak data
+        key = next(iter(peak_data))
+        spectrum_window.model_type = model_types_dict[key[0]]
+        #get all keys that end with "center"
+        center_keys = [key for key in peak_data.keys() if key.endswith('center')]
+        peak_positions = np.array([],dtype = 'int')
+        for key in center_keys:           
+            peak_index = np.abs(spectrum_window.data[:,0] - float(peak_data[key])).argmin()
+            peak_positions = np.append(peak_positions,peak_index)
+        spectrum_window.inital_peak_positions = peak_positions
+        spectrum_window.set_model_and_parameters()
+        for key in peak_data.keys():
+            if key.endswith('center'):
+                pass
+            else:
+                spectrum_window.pars[key].set(value = float(peak_data[key]))
+        spectrum_window.itemise_table_from_find_peaks()
+        spectrum_window.add_table_data_range()
+        spectrum_window.show_fittingcurve_button.setEnabled(True)
+        spectrum_window.show_fittedpeaks_button.setEnabled(True)
+        spectrum_window.make_param_list()
+        spectrum_window.add_table_fitting_data_from_pars()
+        spectrum_window.draw_graph()
+        #run set model function in spectrum window
+        
+        return
 
 

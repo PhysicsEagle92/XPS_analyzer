@@ -371,7 +371,6 @@ class XPS_GraphWindow(data_handling,peak_fitting,QtWidgets.QMainWindow):
     
     def open_constraints(self):
         """opens a dialog box that allows the user to set constraints for the fitting process"""
-        
         constraints_window = XPS_ConstraintsWindow()
         #imports data to find peaks window
         constraints_window.peak_no = self.peak_no
@@ -467,17 +466,17 @@ class XPS_GraphWindow(data_handling,peak_fitting,QtWidgets.QMainWindow):
                 self.peak_table.setItem(i+3,j,QtWidgets.QTableWidgetItem(item))    
         return
 
-    def add_table_fitting_data(self):
+    def add_table_fitting_data_from_pars(self):
         """adds the data to the table"""
-        for param in self.fit_results.params:
+        for param in self.pars.keys():
             j = int(re.findall(r'\d+',param)[0])           
             if "center" in param:
                 i = 2        
-                item = self.cell(str(np.round(self.fit_results.params[param].value,5)))
+                item = self.cell(str(np.round(self.pars[param].value,5)))
                 self.peak_table.setItem(i,j,QtWidgets.QTableWidgetItem(item))
             else:
                 i = self.param_list.index(param[len(self.model_prefix[0]):]) 
-                item = self.cell(str(np.round(self.fit_results.params[param].value,5)))
+                item = self.cell(str(np.round(self.pars[param].value,5)))
                 self.peak_table.setItem(i+3,j,QtWidgets.QTableWidgetItem(item))    
         return
 
@@ -599,11 +598,10 @@ class XPS_GraphWindow(data_handling,peak_fitting,QtWidgets.QMainWindow):
     def initiate_fitting(self):
         """runs the fitting algorithm and set a number of buttons to be enabled or disabled depending on the outcome"""
         #creates a generic name 'set model' which is then used to call the correct model function from a string
+        print(self.spanned_data[:,1],self.background)
         x,y = self.spanned_data[:,0],self.spanned_data[:,1]-self.background
         try:
             if self.constraints is not None:
-                print("from conts", self.get_prefix_from_constraints())
-                print("from pres",self.model_prefix)
                 if all(self.get_prefix_from_constraints()) == all(self.model_prefix):
                     print("Adding Constraints")
                     self.set_constraint_parameters()

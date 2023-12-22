@@ -210,7 +210,6 @@ class XPS_PeakSettingWindow(QtWidgets.QDialog):
         if item is None:
             pass
         elif item.text().replace(".","",1).isdigit() == True or (item.text()[1:].replace(".","",1).isdigit() == True and item.text()[0] == "-"):
-            print(float(item.text()))
             if self.data[0,0] < self.data[-1,0]:
                 if (float(item.text()) >= self.data[0,0]) & (float(item.text()) <= self.data[-1,0]):
                     
@@ -307,12 +306,12 @@ class data_handling():
             for i in range(len(self.inital_peak_positions)):
                 self.MplWidget.canvas.axes.plot(X[self.inital_peak_positions[i]],Y[self.inital_peak_positions[i]],'x',color = "green")
         #function includes statments so fitting curve is plotted if available
-        if self.fit_results is None or self.show_fittingcurve_button.isChecked() == False:
+        if self.fitted_array is None or self.show_fittingcurve_button.isChecked() == False:
             pass
         else:
             self.plot_fitting(self.data[:,0],self.fitted_array)
         #function includes statments so fitted peaks are plotted if available
-        if self.fit_results is None or self.show_fittedpeaks_button.isChecked() == False:
+        if self.peaks is None or self.show_fittedpeaks_button.isChecked() == False:
             pass
         else:
             self.plot_peak_model(self.data[:,0],self.peaks,self.peak_no)#,self.background,self.sind)
